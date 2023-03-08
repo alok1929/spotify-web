@@ -1,13 +1,13 @@
-const qs=require('qs')
-require('dotenv').config();
-const express = require("express");
-const app = express();
+const express=require('express')
 
-app.listen(8080, () => {
-  console.log("App is listening on port 8080!\n");
-});
 
-const queryString = require("node:querystring");
+client_id="8497fd1eb5bb4dbaa481fb40dac207d8"
+client_secret="465a2c4dd6a6406d8ebc5d653686cd5c"
+var redirect_uri = 'http://localhost:8888/callback';
+
+var app = express();
+
+const queryString = require("querystring");
 const axios = require("axios");
 
 app.get("/account", async (req, res) => {
@@ -16,11 +16,11 @@ app.get("/account", async (req, res) => {
       queryString.stringify({
         grant_type: "authorization_code",
         code: req.query.code,
-        redirect_uri: process.env.REDIRECT_URI_DECODED,
+        redirect_uri: redirect_uri,
       }),
       {
         headers: {
-          Authorization: "Basic " + process.env.BASE64_AUTHORIZATION,
+          Authorization: "Basic " + client_secret,
           "Content-Type": "application/x-www-form-urlencoded",
         },
       }
@@ -28,3 +28,13 @@ app.get("/account", async (req, res) => {
   
   console.log(spotifyResponse.data);
 })
+const data = axios.get(
+    "https://api.spotify.com/v1/me/top/tracks?limit=50",
+    {
+      headers: {
+        Authorization: "Bearer " + spotifyResponse,
+      },
+    }
+  );
+
+  console.log(data)
