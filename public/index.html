@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Spotify Web Playback SDK Demo</title>
+  </head>
+  <body>
+    <button id="togglePlay">Toggle Play</button>
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+    <script>
+      const CLIENT_ID = '8497fd1eb5bb4dbaa481fb40dac207d8';
+      const REDIRECT_URI = 'http://localhost:3000/callback';
+      const accessToken = 'BQALdk_-jdKQsCD33MBrt1ykVazxhvnY7CK2fO33F4ovIdwB4BmsWltAKPMmcT8TyCOLkVp_MpN5MlEvgxpThJaKdOvQfB-ecXBY17Kf_ZSV3nPCx-D5Fno15CsyP0vQsTc2NzCRVw6hug5r-hf48C978ozLv7CD2KNXoRrbGq3_xQaDpKUS2NDxcvOa_DQWB1f5Du1QR4KsP0RbJkaEVLGWkEWE';
+
+      // Initialize the Spotify Web Playback SDK
+      window.onSpotifyWebPlaybackSDKReady = () => {
+        const player = new Spotify.Player({
+          name: 'My Web Playback SDK Player',
+          getOAuthToken: callback => {
+            callback(accessToken);
+          }
+        });
+
+        player.addListener('ready', ({ device_id }) => {
+                console.log('Ready with Device ID', device_id);
+            });
+        
+            document.getElementById('togglePlay').onclick = function() {
+                player.togglePlay();
+            };
+            
+            document.getElementById('togglePlay').onclick = function() {
+                player.addListener();
+            };
+        // Connect to the player
+        player.connect();
+
+        // Play a track
+        player.addListener('ready', ({ device_id }) => {
+          fetch(`https://api.spotify.com/v1/me/player/play?device_id=${device_id}`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              uris: ['spotify:track:7KXjTSCq5nL1LoYtL7X']
+            })
+          });
+         
+        });
+      };
+    </script>
+  </body>
+</html>
