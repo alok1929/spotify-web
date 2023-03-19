@@ -6,13 +6,15 @@
     <title>Spotify Web Playback SDK Demo</title>
   </head>
   <body>
-    <button id="togglePlay">Toggle Play</button>
+    <button id="togglePlay">pause</button>
+    <br>
+    <button id="songPlay">play playlist</button>
+    <button id="nextPlay">next song</button>
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
     <script>
       const CLIENT_ID = '8497fd1eb5bb4dbaa481fb40dac207d8';
       const REDIRECT_URI = 'http://localhost:3000/callback';
-      const accessToken = 'BQALdk_-jdKQsCD33MBrt1ykVazxhvnY7CK2fO33F4ovIdwB4BmsWltAKPMmcT8TyCOLkVp_MpN5MlEvgxpThJaKdOvQfB-ecXBY17Kf_ZSV3nPCx-D5Fno15CsyP0vQsTc2NzCRVw6hug5r-hf48C978ozLv7CD2KNXoRrbGq3_xQaDpKUS2NDxcvOa_DQWB1f5Du1QR4KsP0RbJkaEVLGWkEWE';
-
+      const accessToken = 'BQArPb0to3jQpxb_As8qvIMXQilYKtHcS5M3mRbwnT8OkMCTXpG8DGtr1zoTHLVElieSWWtCZRH8SVUbhObMpXPBiY260goc1ybhkesazAlOeL87HzCVhhCcP5qEJ8JZQOsmWKR8iJ91sKPL8gWVD1zeLzAONW3Rl63CYbgZsK0BeggRyaxP3U_d1fl9FwAAzYXwZbmRCHbYVa_3r9UuKSyyVlgq';
       // Initialize the Spotify Web Playback SDK
       window.onSpotifyWebPlaybackSDKReady = () => {
         const player = new Spotify.Player({
@@ -30,8 +32,12 @@
                 player.togglePlay();
             };
             
-            document.getElementById('togglePlay').onclick = function() {
+            document.getElementById('songPlay').onclick = function() {
                 player.addListener();
+            };
+             
+            document.getElementById('nextPlay').onclick = function() {
+                player.nextListener();
             };
         // Connect to the player
         player.connect();
@@ -45,11 +51,26 @@
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              uris: ['spotify:track:7KXjTSCq5nL1LoYtL7X']
+              uris: ['spotify:track:2tWgDaPQQxIMPhlOSbdITC']
             })
           });
-         
+          
         });
+
+        player.nextListener('ready', ({ device_id }) => {
+          fetch(`https://api.spotify.com/v1/me/player/play?device_id=${device_id}`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              uris: ['spotify:track:2jWMDQyrH7imrlEte4p16i']
+            })
+          });
+        });
+
+
       };
     </script>
   </body>
